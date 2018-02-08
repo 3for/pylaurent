@@ -3,20 +3,27 @@
 This is a helper library that lets Python call NTL through CFFI.
 It is used in [BCCGP-sqrt](https://github.com/hyraxZK/bccgp) for polynomial multiplication.
 
-This library requires [NTL 10.x](http://www.shoup.net/ntl/). This might be as simple as
+# Building #
+
+On Debian-ish systems, you'll probably need the following:
+
+    apt-get install build-essential g++ automake pkg-config \
+                    libtool libtool-bin libgmp-dev
+
+This library also requires [NTL 10.x](http://www.shoup.net/ntl/). This might be as simple as
 
 	apt-get install libntl-dev
 
 But several distributions (including Debian 9.x) do not package recent enough versions.
 Lucky you! You get to build a newer version.
 
-## Building NTL ##
+## NTL ##
 
 You only need to do this if your distribution doesn't provide NTL 10.x. If you've
 already got it, you can skip to the next section.
 
-First, make a directory, link it to your homedir (you'll need this later),
-and unpack the source.
+We'll install this library in `$HOME/toolchains`, so first we need to make
+that directory, get the source, and unpack it:
 
     mkdir -p $HOME/toolchains/src
     cd $HOME/toolchains/src
@@ -24,7 +31,9 @@ and unpack the source.
     tar xzvf ntl-10.5.0.tar.gz
     cd ntl-10.5.0/src
 
-Now we're going to configure and build NTL. The following options are known to work.
+Now we're going to configure and build NTL. The following options are known
+to work, assuming you have a C++14-compatible compiler (e.g., g++ >= 5).
+Otherwise, change `NTL_STD_CXX14` to `NTL_STD_CXX11` immediately below.
 
     ./configure DEF_PREFIX=/usr PREFIX=$HOME/toolchains SHARED=on \
                 NTL_THREAD_BOOST=on NTL_STD_CXX14=on
@@ -33,7 +42,7 @@ Now we're going to configure and build NTL. The following options are known to w
 
 The above will take a while because it'll run some tuning scripts. Give it five minutes or so.
 
-## Building pylaurent ##
+## pylaurent ##
 
 Now we're ready to build pylaurent:
 
@@ -43,7 +52,7 @@ Now we're ready to build pylaurent:
 	# otherwise, just call ./configure
     make -j4		# for example
 
-## Make sure everything works ##
+## Making sure things wiggle ##
 
 If you don't have it installed already, you should first install Python's CFFI package:
 
@@ -54,7 +63,7 @@ Now:
 	cd python
 	python -m pylaurent
 
-If you don't get any errors, you're set!
+If you don't get any errors, you ought to be all set.
 
 ## contact ##
 
